@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+:root {
+  --wood-grain-dark: #1f1109;
+  --wood-shelf-top: #4a2916;
+  --wood-shelf-mid: #381d0e;
+  --wood-shelf-bottom: #241107;
+  --wood-highlight: #704022;
+  --wood-shadow: rgba(0, 0, 0, 0.65);
+  
+  --brass-gold: #e5b364;
+  --brass-light: #fbe3a1;
+  --brass-dark: #a1732c;
+  
+  --bg-deep: #140b07;
+  --text-main: #f5eedf;
+  --text-muted: #b89f8c;
+  --text-dim: #7d6554;
+  
+  --font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars with brass wood finish */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(20, 11, 7, 0.85);
+  border-left: 1px solid rgba(80, 45, 25, 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #5b341c, #3a1e0f);
+  border-radius: 6px;
+  border: 1px solid var(--brass-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #784424, #4a2814);
+}
+
+/* 3D Perspective Container for Bookshelf */
+.bookshelf-stage {
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Realistic Skeuomorphic iOS 7 iBooks Wood Shelf */
+.wooden-shelf {
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 45px;
+}
+
+/* Row of games standing side by side */
+.shelf-games-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  padding: 20px 40px 0px 40px;
+  min-height: 250px;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 5;
+}
+
+/* Shelf Top Plane (Plank where games stand) */
+.shelf-board-top {
+  height: 30px;
+  width: 100%;
+  background: linear-gradient(to bottom, #58311a 0%, #462512 60%, #361a0b 100%);
+  border-top: 2px solid #7d4826;
+  border-bottom: 1px solid #1a0b04;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.15), inset 0 -3px 8px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 2;
+  transform: rotateX(15deg);
+  transform-origin: bottom;
+  margin-top: -2px;
+}
+
+/* The Front Facing Lip of the Shelf */
+.shelf-board-front {
+  height: 40px;
+  width: 100%;
+  background: linear-gradient(to bottom, #3f200e 0%, #291307 70%, #170903 100%);
+  border-top: 1px solid #6c3b1d;
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.95), 0 6px 12px rgba(0, 0, 0, 0.7);
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Brass nameplate in middle of shelf */
+.shelf-brass-plate {
+  padding: 4px 22px;
+  background: linear-gradient(180deg, #e5b364 0%, #c48e3d 40%, #8c6020 100%);
+  border: 1px solid #ffe6a6;
+  border-radius: 4px;
+  color: #2b1704;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Game Card Physical Box */
+.game-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0 !important;
+  width: 155px;
+  margin: 0 12px;
+  cursor: grab;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s ease;
+  transform-origin: bottom center;
+  position: relative;
+}
+
+.game-item-card:active {
+  cursor: grabbing;
+}
+
+.game-item-card:hover {
+  transform: translateY(-22px) scale(1.06) rotateY(-3deg);
+  z-index: 50;
+  filter: brightness(1.08);
+}
+
+.game-item-card.dragging {
+  opacity: 0.45;
+  transform: scale(0.92);
+}
+
+.game-item-card.drag-target-over {
+  border-left: 4px solid #e5b364 !important;
+  transform: translateX(8px);
+}
+
+/* Physical Case Depth and Glare */
+.case-spine-depth {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 14px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(255, 255, 255, 0.2) 35%, rgba(0, 0, 0, 0.3) 100%);
+  pointer-events: none;
+  z-index: 10;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.case-plastic-glare {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 60%);
+  pointer-events: none;
+  z-index: 11;
+  border-radius: 6px;
+}
+
+/* Shadow beneath the game onto the wood shelf */
+.case-wood-shadow {
+  position: absolute;
+  bottom: 22px;
+  left: 10%;
+  width: 80%;
+  height: 18px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.game-item-card:hover .case-wood-shadow {
+  transform: scale(1.2) translateY(8px);
+  opacity: 0.5;
+}
+
+/* Wood background wall pattern */
+.bg-wood-wallpaper {
+  background-color: #170d07;
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(85, 45, 22, 0.35) 0%, transparent 70%),
+    linear-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.4) 1px, transparent 1px);
+  background-size: 100% 100%, 80px 80px, 80px 80px;
+}
+
+/* CD Spinning Animation */
+@keyframes cd-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cd-spinning {
+  animation: cd-spin 12s linear infinite;
+}
+
+/* CD Hologram Sheen */
+.cd-hologram {
+  background: 
+    radial-gradient(circle at center, transparent 38%, rgba(255,255,255,0.8) 40%, transparent 42%),
+    conic-gradient(
+      from 0deg,
+      #ff595e,
+      #ffca3a,
+      #8ac926,
+      #1982c4,
+      #6a4c93,
+      #ff595e
+    );
+  opacity: 0.65;
+  mix-blend-mode: color-dodge;
+}
+
+/* 🪵 Wood Finish Themes - Realistic Rich Textures */
+/* 1. Walnut (Default - Deep Warm Timber with Rich Amber Undertones) */
+.theme-wood-walnut {
+  --wood-wall: #1a0f08;
+  --wall-pattern: repeating-linear-gradient(90deg, #180d07 0px, #180d07 40px, #1f110a 41px, #1a0e08 80px),
+                  radial-gradient(ellipse at 50% 20%, rgba(130, 65, 25, 0.28) 0%, transparent 75%);
+  --shelf-top-from: #63361c;
+  --shelf-top-to: #3a1b0b;
+  --shelf-front-from: #45210d;
+  --shelf-front-to: #180a04;
+  --shelf-lip-highlight: #8c4c23;
+  --brass-plate-bg: linear-gradient(180deg, #e5b364 0%, #c48e3d 40%, #8c6020 100%);
+  --brass-plate-text: #2b1704;
+}
+
+/* 2. Mahogany (Kızıl Kraliyet Maun - Deep Wine Red & Polished Luster) */
+.theme-wood-mahogany {
+  --wood-wall: #1a0808;
+  --wall-pattern: repeating-linear-gradient(90deg, #170707 0px, #170707 45px, #240b0b 46px, #1c0808 90px),
+                  radial-gradient(ellipse at 50% 20%, rgba(180, 40, 30, 0.25) 0%, transparent 75%);
+  --shelf-top-from: #73231c;
+  --shelf-top-to: #3d100c;
+  --shelf-front-from: #521510;
+  --shelf-front-to: #1e0503;
+  --shelf-lip-highlight: #aa362c;
+  --brass-plate-bg: linear-gradient(180deg, #f39c7a 0%, #c45b45 40%, #8c2e20 100%);
+  --brass-plate-text: #2b0804;
+}
+
+/* 3. Nordic Oak (İskandinav Açık Doğal Meşe - Warm Blonde Timber) */
+.theme-wood-oak {
+  --wood-wall: #1e1a14;
+  --wall-pattern: repeating-linear-gradient(90deg, #1b1712 0px, #1b1712 50px, #29231b 51px, #201b15 100px),
+                  radial-gradient(ellipse at 50% 20%, rgba(190, 145, 90, 0.25) 0%, transparent 75%);
+  --shelf-top-from: #916840;
+  --shelf-top-to: #5c4125;
+  --shelf-front-from: #6e4e2d;
+  --shelf-front-to: #332313;
+  --shelf-lip-highlight: #bfa073;
+  --brass-plate-bg: linear-gradient(180deg, #fff2d1 0%, #d8b472 40%, #99783f 100%);
+  --brass-plate-text: #24190b;
+}
+
+/* 4. Obsidian Black Lake (Ultra Lüks Modern Mat Siyah Karbon Ağaç) */
+.theme-wood-obsidian {
+  --wood-wall: #08090a;
+  --wall-pattern: repeating-linear-gradient(90deg, #090a0c 0px, #090a0c 35px, #14161a 36px, #0d0e11 70px),
+                  radial-gradient(ellipse at 50% 20%, rgba(80, 100, 140, 0.2) 0%, transparent 75%);
+  --shelf-top-from: #2d3036;
+  --shelf-top-to: #151618;
+  --shelf-front-from: #202227;
+  --shelf-front-to: #0b0c0d;
+  --shelf-lip-highlight: #4d525c;
+  --brass-plate-bg: linear-gradient(180deg, #d1d5db 0%, #6b7280 40%, #374151 100%);
+  --brass-plate-text: #111827;
+}
+
+/* Apply background pattern dynamically */
+.bg-wood-wallpaper {
+  background-color: var(--wood-wall, #170d07) !important;
+  background-image: var(--wall-pattern, 
+    radial-gradient(circle at 50% 30%, rgba(85, 45, 22, 0.35) 0%, transparent 70%),
+    linear-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.4) 1px, transparent 1px)) !important;
+  background-size: 100% 100%, 80px 80px, 80px 80px;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Dynamic Shelf Top & Front applied using CSS variables */
+.shelf-board-top {
+  background: linear-gradient(to bottom, var(--shelf-top-from, #58311a) 0%, var(--shelf-top-to, #361a0b) 100%) !important;
+  border-top-color: var(--shelf-lip-highlight, #7d4826) !important;
+  transition: all 0.4s ease;
+}
+
+.shelf-board-front {
+  background: linear-gradient(to bottom, var(--shelf-front-from, #3f200e) 0%, var(--shelf-front-to, #170903) 100%) !important;
+  border-top-color: var(--shelf-lip-highlight, #6c3b1d) !important;
+  transition: all 0.4s ease;
+}
+
+.shelf-brass-plate {
+  background: var(--brass-plate-bg, linear-gradient(180deg, #e5b364 0%, #c48e3d 40%, #8c6020 100%)) !important;
+  color: var(--brass-plate-text, #2b1704) !important;
+  transition: all 0.4s ease;
+}
+
+/* 🕯️ Room Atmosphere Lighting Overlays - Rich Immersive Lighting */
+.ambience-fireplace {
+  box-shadow: inset 0 0 160px rgba(240, 90, 15, 0.35), inset 0 40px 100px rgba(255, 140, 20, 0.18) !important;
+  filter: contrast(1.04) brightness(1.02);
+}
+
+.ambience-rgb {
+  box-shadow: inset 0 0 160px rgba(140, 30, 255, 0.32), inset 0 -80px 120px rgba(0, 230, 255, 0.22) !important;
+  filter: contrast(1.06) brightness(1.04);
+}
+
+.ambience-cozy {
+  box-shadow: inset 0 0 140px rgba(255, 190, 80, 0.28), inset 0 0 60px rgba(200, 130, 40, 0.15) !important;
+  filter: sepia(0.08) brightness(0.98);
+}
+
+/* Barcode Laser Scan Line Animation */
+@keyframes laserSweep {
+  0% { top: 0%; opacity: 0.8; }
+  50% { top: 96%; opacity: 1; }
+  100% { top: 0%; opacity: 0.8; }
+}
+
+.barcode-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #ff2a2a;
+  box-shadow: 0 0 12px #ff0000, 0 0 20px #ff3333;
+  animation: laserSweep 1.8s ease-in-out infinite;
+  z-index: 99;
+}
+
